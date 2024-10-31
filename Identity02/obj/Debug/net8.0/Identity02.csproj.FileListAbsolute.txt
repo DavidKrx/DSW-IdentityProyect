@@ -292,3 +292,4 @@ C:\Users\2dawa\Documents\IdentityProyect\Identity02\obj\Debug\net8.0\refint\Iden
 C:\Users\2dawa\Documents\IdentityProyect\Identity02\obj\Debug\net8.0\Identity02.pdb
 C:\Users\2dawa\Documents\IdentityProyect\Identity02\obj\Debug\net8.0\Identity02.genruntimeconfig.cache
 C:\Users\2dawa\Documents\IdentityProyect\Identity02\obj\Debug\net8.0\ref\Identity02.dll
+C:\Users\2dawa\Documents\IdentityProyect\Identity02\obj\Debug\net8.0\Identity02.sourcelink.json
