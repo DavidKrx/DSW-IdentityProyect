@@ -22,38 +22,46 @@ public partial class NorthwindContext : IdentityDbContext
     public virtual DbSet<Supplier> Suppliers { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<Supplier>().ToTable("Suppliers", t => t.ExcludeFromMigrations());
-        List<IdentityRole> roles = new List<IdentityRole>() {
-            new IdentityRole() { Name = "Admin", NormalizedName = "ADMIN" },
-            new IdentityRole() { Name = "User", NormalizedName = "USER" }
-        };
+     
+         //CREAR ROLES
+         List<IdentityRole> roles = new List<IdentityRole>() {
+             new IdentityRole() {Name = "Admin", NormalizedName = "ADMIN" },
+             new IdentityRole() {Name = "User", NormalizedName = "USER" }
+         };
+         modelBuilder.Entity<IdentityRole>().HasData(roles);
 
+         //CREAR USUARIOS
+         List<IdentityUser> users = new List<IdentityUser>() {
+             new IdentityUser {UserName = "Admin", NormalizedUserName = "ADMIN", Email = "admin000@gmail.com", NormalizedEmail = "ADMIN000@GMAIL.COM" },
+             new IdentityUser {UserName = "pedro", NormalizedUserName = "PEDRO", Email = "pedro000@gmail.com", NormalizedEmail = "PEDRO000@GMAIL.COM" }
+         };
+         modelBuilder.Entity<IdentityUser>().HasData(users);
+         //HASH PASSWORD
+         var passwordHasher = new PasswordHasher<IdentityUser>();
+         users[0].PasswordHash = passwordHasher.HashPassword(users[0], "$Admin000");
+         users[1].PasswordHash = passwordHasher.HashPassword(users[1], "$Pedro000");
 
-        List<IdentityUser> users = new List<IdentityUser>() {
-            new IdentityUser { UserName = "Admin", NormalizedUserName = "ADMIN", Email = "admin000@gmail.com", NormalizedEmail = "ADMIN000@GMAIL.COM" },
-            new IdentityUser { UserName = "pedro", NormalizedUserName = "PEDRO", Email = "pedro000@gmail.com", NormalizedEmail = "ADMIN000@GMAIL.COM" }
-        };
+         //https://techriders.tajamar.es/seed-identity-users-roles-con-ef-core-en-net-core/
 
-        modelBuilder.Entity<IdentityRole>().HasData(roles);
-        modelBuilder.Entity<IdentityUser>().HasData(users);
+         //Agregar roles a usuarios
+         List<IdentityUserRole<String>> userRoles = new List<IdentityUserRole<String>>();
+         userRoles.Add(new IdentityUserRole<String>
+         {
+             UserId = users[0].Id,
+             RoleId = roles.First(q=> q.Name=="Admin").Id
+             //RoleId = roles[1].Name
+         });
+         userRoles.Add(new IdentityUserRole<String>
+         {
+             UserId = users[1].Id,
+             RoleId = roles.First(q => q.Name == "User").Id
+             //RoleId = roles[1].Name
+         });
 
-        var passwordHasher = new PasswordHasher<IdentityUser>();
-        users[0].PasswordHash = passwordHasher.HashPassword(users[0], "$Admin000");
-        users[1].PasswordHash = passwordHasher.HashPassword(users[1], "$Pedro000");
+         modelBuilder.Entity<IdentityUser>().HasData(userRoles);
 
-        //https://techriders.tajamar.es/seed-identity-users-roles-con-ef-core-en-net-core/
-        List<IdentityUserRole<String>> userRoles = new List<IdentityUserRole<String>>()
-        {
-            new IdentityUserRole<string>{
-                UserId=users[0].Id, RoleId=roles[0].Id
-                                            },
-            new IdentityUserRole<string>{
-                UserId=users[1].Id, RoleId=roles[1].Id
-            }
-        };
-
-        modelBuilder.Entity<IdentityUser>().HasData(userRoles);
+        base.OnModelCreating(modelBuilder);
     }
 
 
