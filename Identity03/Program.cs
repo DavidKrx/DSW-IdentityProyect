@@ -12,6 +12,7 @@ builder.Services.AddDbContext<NorthwindContext>(options =>
     GetConnectionString("NorthwindConnection")));
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<NorthwindContext>();
 
 builder.Services.Configure<IdentityOptions>(options =>
